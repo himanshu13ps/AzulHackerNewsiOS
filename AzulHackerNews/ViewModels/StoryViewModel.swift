@@ -22,7 +22,7 @@ class StoryViewModel: ObservableObject {
         
         do {
             // Fetch all story IDs first
-            allStoryIds = try await networkManager.fetchNewStoryIds()
+            allStoryIds = try await networkManager.fetchTopStoryIds()
             
             // Reset pagination
             currentPage = 0

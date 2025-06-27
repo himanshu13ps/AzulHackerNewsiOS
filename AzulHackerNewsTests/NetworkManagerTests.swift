@@ -12,9 +12,9 @@ final class NetworkManagerTests: XCTestCase {
         networkManager = nil
     }
     
-    func testFetchNewStoryIds() async throws {
+    func testFetchTopStoryIds() async throws {
         // Test fetching story IDs from the API
-        let storyIds = try await networkManager.fetchNewStoryIds()
+        let storyIds = try await networkManager.fetchTopStoryIds()
         
         XCTAssertFalse(storyIds.isEmpty, "Story IDs should not be empty")
         XCTAssertTrue(storyIds.count > 0, "Should fetch multiple story IDs")
@@ -27,7 +27,7 @@ final class NetworkManagerTests: XCTestCase {
     
     func testFetchSingleStory() async throws {
         // First get some story IDs
-        let storyIds = try await networkManager.fetchNewStoryIds()
+        let storyIds = try await networkManager.fetchTopStoryIds()
         guard let firstId = storyIds.first else {
             XCTFail("No story IDs available for testing")
             return
@@ -44,7 +44,7 @@ final class NetworkManagerTests: XCTestCase {
     
     func testFetchMultipleStories() async throws {
         // Get some story IDs for testing
-        let allStoryIds = try await networkManager.fetchNewStoryIds()
+        let allStoryIds = try await networkManager.fetchTopStoryIds()
         let testIds = Array(allStoryIds.prefix(5)) // Test with first 5 IDs
         
         // Test fetching multiple stories
