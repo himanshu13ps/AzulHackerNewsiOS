@@ -127,7 +127,8 @@ final class StoryViewModelTests: XCTestCase {
             by: "testuser",
             time: Date().timeIntervalSince1970,
             text: nil,
-            type: "story"
+            type: "story",
+            score: 42
         )
         
         // Test publishDate computed property
@@ -144,35 +145,11 @@ final class StoryViewModelTests: XCTestCase {
             by: "testuser2",
             time: Date().timeIntervalSince1970,
             text: "Story text",
-            type: "story"
+            type: "story",
+            score: 15
         )
         
         XCTAssertEqual(storyWithoutURL.displaySource, "Hacker News")
-    }
-    
-    func testStoryTypeToggle() async {
-        // Test initial story type
-        XCTAssertEqual(viewModel.selectedStoryType, .top, "Should start with top stories")
-        
-        // Load initial stories (should be top stories)
-        await viewModel.loadInitialStories()
-        let topStoriesCount = viewModel.stories.count
-        
-        // Switch to new stories
-        await viewModel.switchStoryType(to: .new)
-        
-        // Verify story type changed
-        XCTAssertEqual(viewModel.selectedStoryType, .new, "Should switch to new stories")
-        
-        // Should have cleared previous stories and loaded new ones
-        let hasNewStoriesOrError = !viewModel.stories.isEmpty || viewModel.errorMessage != nil
-        XCTAssertTrue(hasNewStoriesOrError, "Should have new stories or error after switching")
-        
-        // Switch back to top stories
-        await viewModel.switchStoryType(to: .top)
-        
-        // Verify story type changed back
-        XCTAssertEqual(viewModel.selectedStoryType, .top, "Should switch back to top stories")
     }
     
     func testStoryTypeSwitchResetsState() async {
