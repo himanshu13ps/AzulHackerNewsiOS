@@ -8,6 +8,7 @@ struct Story: Codable, Identifiable {
   let time: TimeInterval
   let text: String?
   let type: String
+  let score: Int?
 
   // Computed property for formatted date
   var publishDate: Date {
@@ -20,6 +21,12 @@ struct Story: Codable, Identifiable {
       return host
     }
     return "Hacker News"
+  }
+
+  // Computed property for formatted score display
+  var scoreString: String {
+    guard let score = score else { return "" }
+    return score == 1 ? "1 point" : "\(score) points"
   }
 
   // Computed property for custom relative time formatting

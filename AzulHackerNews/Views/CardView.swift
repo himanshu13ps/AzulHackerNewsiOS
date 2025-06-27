@@ -37,7 +37,7 @@ struct CardView: View {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             }
             
-            // Publish date
+            // Publish date and score
             HStack {
                 Image(systemName: "clock")
                     .foregroundColor(.azulTextSecondary)
@@ -50,6 +50,15 @@ struct CardView: View {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 
                 Spacer()
+                
+                // Score
+                if !story.scoreString.isEmpty {
+                    Text(story.scoreString)
+                        .font(.system(.caption, design: .default))
+                        .foregroundColor(.azulTextSecondary)
+                        .accessibilityLabel(story.scoreString)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                }
             }
         }
         .padding(16)
@@ -96,7 +105,8 @@ struct CardView: View {
         by: "username",
         time: Date().timeIntervalSince1970 - 3600, // 1 hour ago
         text: nil,
-        type: "story"
+        type: "story",
+        score: 42
     ))
     .padding()
     .background(Color.azulSecondary)
