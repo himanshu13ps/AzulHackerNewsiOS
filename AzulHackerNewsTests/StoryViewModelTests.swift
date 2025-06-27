@@ -20,6 +20,7 @@ final class StoryViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoadingMore, "Should not be loading more initially")
         XCTAssertNil(viewModel.errorMessage, "Should have no error initially")
         XCTAssertFalse(viewModel.hasReachedEnd, "Should not have reached end initially")
+        XCTAssertEqual(viewModel.selectedStoryType, .top, "Should default to top stories")
     }
     
     func testLoadInitialStories() async {
@@ -62,6 +63,7 @@ final class StoryViewModelTests: XCTestCase {
         // Skip test if initial load failed
         guard !viewModel.stories.isEmpty else {
             XCTSkip("Initial story loading failed, skipping load more test")
+            return
         }
         
         let initialCount = viewModel.stories.count
@@ -104,6 +106,7 @@ final class StoryViewModelTests: XCTestCase {
         // Skip if no stories loaded
         guard !viewModel.stories.isEmpty else {
             XCTSkip("No stories loaded for memory cleanup test")
+            return
         }
         
         let initialCount = viewModel.stories.count
@@ -145,5 +148,64 @@ final class StoryViewModelTests: XCTestCase {
         )
         
         XCTAssertEqual(storyWithoutURL.displaySource, "Hacker News")
+    }
+    
+    func testStoryTypeToggle() async {
+        // Test initial story type
+        XCTAssertEqual(viewModel.selectedStoryType, .top, "Should start with top stories")
+        
+        // Load initial stories (should be top stories)
+        await viewModel.loadInitialStories()
+        let topStoriesCount = viewModel.stories.count
+        
+        // Switch to new stories
+        await viewModel.switchStoryType(to: .new)
+        
+        // Verify story type changed
+        XCTAssertEqual(viewModel.selectedStoryType, .new, "Should switch to new stories")
+        
+        // Should have cleared previous stories and loaded new ones
+        let hasNewStoriesOrError = !viewModel.stories.isEmpty || viewModel.errorMessage != nil
+        XCTAssertTrue(hasNewStoriesOrError, "Should have new stories or error after switching")
+        
+        // Switch back to top stories
+        await viewModel.switchStoryType(to: .top)
+        
+        // Verify story type changed back
+        XCTAssertEqual(viewModel.selectedStoryType, .top, "Should switch back to top stories")
+    }
+    
+    func testStoryTypeSwitchResetsState() async {
+        // Load initial stories
+        await viewModel.loadInitialStories()
+        
+        // Skip if no stories loaded
+        guard !viewModel.stories.isEmpty else {
+            XCTSkip("No stories loaded for state reset test")
+            return
+        }
+        
+        // Load more stories to have pagination state
+        await viewModel.loadMoreStories()
+        
+        // Switch story type
+        await viewModel.switchStoryType(to: .new)
+        
+        // Verify state was reset
+        XCTAssertFalse(viewModel.hasReachedEnd, "Should reset hasReachedEnd when switching story types")
+        XCTAssertNil(viewModel.errorMessage, "Should clear error when switching story types")
+    }
+    
+    func testStoryTypeSwitchToSameType() async {
+        // Load initial stories
+        await viewModel.loadInitialStories()
+        let initialStoriesCount = viewModel.stories.count
+        
+        // Try to switch to the same type (should be no-op)
+        await viewModel.switchStoryType(to: .top)
+        
+        // Should remain the same
+        XCTAssertEqual(viewModel.selectedStoryType, .top, "Should remain top stories")
+        XCTAssertEqual(viewModel.stories.count, initialStoriesCount, "Stories count should not change when switching to same type")
     }
 }

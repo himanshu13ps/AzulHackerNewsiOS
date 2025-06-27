@@ -155,6 +155,20 @@ struct ContentView: View {
             .navigationBarTitleDisplayMode(.large)
             .accessibilityLabel("Hacker News Stories")
             .accessibilityHint("Browse latest stories from Hacker News")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    StoryTypeToggle(
+                        selectedType: $viewModel.selectedStoryType,
+                        onSelectionChange: { newType in
+                            Task {
+                                await viewModel.switchStoryType(to: newType)
+                            }
+                        }
+                    )
+                    .accessibilityLabel("Story type selector")
+                    .accessibilityHint("Switch between top stories and new stories")
+                }
+            }
             .task {
                 if viewModel.stories.isEmpty {
                     await viewModel.loadInitialStories()

@@ -25,6 +25,34 @@ final class NetworkManagerTests: XCTestCase {
         }
     }
     
+    func testFetchNewStoryIds() async throws {
+        // Test fetching new story IDs from the API
+        let storyIds = try await networkManager.fetchNewStoryIds()
+        
+        XCTAssertFalse(storyIds.isEmpty, "New story IDs should not be empty")
+        XCTAssertTrue(storyIds.count > 0, "Should fetch multiple new story IDs")
+        
+        // Verify all IDs are positive integers
+        for id in storyIds {
+            XCTAssertGreaterThan(id, 0, "Story ID should be positive")
+        }
+    }
+    
+    func testFetchStoryIdsByType() async throws {
+        // Test fetching top stories by type
+        let topStoryIds = try await networkManager.fetchStoryIds(for: .top)
+        XCTAssertFalse(topStoryIds.isEmpty, "Top story IDs should not be empty")
+        
+        // Test fetching new stories by type
+        let newStoryIds = try await networkManager.fetchStoryIds(for: .new)
+        XCTAssertFalse(newStoryIds.isEmpty, "New story IDs should not be empty")
+        
+        // Verify all IDs are positive integers
+        for id in topStoryIds + newStoryIds {
+            XCTAssertGreaterThan(id, 0, "Story ID should be positive")
+        }
+    }
+    
     func testFetchSingleStory() async throws {
         // First get some story IDs
         let storyIds = try await networkManager.fetchTopStoryIds()
@@ -59,6 +87,24 @@ final class NetworkManagerTests: XCTestCase {
             XCTAssertFalse(story.title.isEmpty, "Story should have a title")
             XCTAssertFalse(story.by.isEmpty, "Story should have an author")
         }
+    }
+    
+    func testStoryTypesReturnDifferentResults() async throws {
+        // Fetch both top and new story IDs
+        let topStoryIds = try await networkManager.fetchTopStoryIds()
+        let newStoryIds = try await networkManager.fetchNewStoryIds()
+        
+        // Both should have content
+        XCTAssertFalse(topStoryIds.isEmpty, "Top stories should not be empty")
+        XCTAssertFalse(newStoryIds.isEmpty, "New stories should not be empty")
+        
+        // Take first few IDs from each to compare
+        let topSample = Array(topStoryIds.prefix(10))
+        let newSample = Array(newStoryIds.prefix(10))
+        
+        // They should generally be different (though there might be some overlap)
+        // We'll check that they're not identical arrays
+        XCTAssertNotEqual(topSample, newSample, "Top and new story lists should generally be different")
     }
     
     func testInvalidStoryId() async {

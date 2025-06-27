@@ -1,5 +1,10 @@
 import Foundation
 
+enum StoryType {
+  case top
+  case new
+}
+
 enum NetworkError: Error, LocalizedError {
   case invalidURL
   case noData
@@ -50,6 +55,35 @@ class NetworkManager: ObservableObject {
       } else {
         throw NetworkError.networkError(error)
       }
+    }
+  }
+
+  // Fetch array of new story IDs
+  func fetchNewStoryIds() async throws -> [Int] {
+    guard let url = URL(string: "\(baseURL)/newstories.json") else {
+      throw NetworkError.invalidURL
+    }
+
+    do {
+      let (data, _) = try await session.data(from: url)
+      let storyIds = try JSONDecoder().decode([Int].self, from: data)
+      return storyIds
+    } catch {
+      if error is DecodingError {
+        throw NetworkError.decodingError
+      } else {
+        throw NetworkError.networkError(error)
+      }
+    }
+  }
+
+  // Fetch story IDs based on story type
+  func fetchStoryIds(for type: StoryType) async throws -> [Int] {
+    switch type {
+    case .top:
+      return try await fetchTopStoryIds()
+    case .new:
+      return try await fetchNewStoryIds()
     }
   }
 
