@@ -11,7 +11,7 @@ extension Color {
     static let azulAccent = Color(red: 0.08, green: 0.25, blue: 0.65)
     
     // Card background color with subtle warmth
-    static let azulCardBackground = Color(red: 0.99, green: 0.99, blue: 1.0)
+    static let azulCardBackground = Color(red: 0.95, green: 0.95, blue: 0.95)
     
     // Text colors with excellent contrast ratios
     static let azulTextPrimary = Color(red: 0.1, green: 0.1, blue: 0.1)
@@ -20,4 +20,7 @@ extension Color {
     // Additional theme colors for enhanced visual hierarchy
     static let azulShadow = Color.azulPrimary.opacity(0.08)
     static let azulBorder = Color.azulPrimary.opacity(0.12)
+
+    // Loading text color
+    static let azulLoadingText = Color(red: 0.75, green: 0.75, blue: 0.75)
 }
