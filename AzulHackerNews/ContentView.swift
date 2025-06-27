@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
   @StateObject private var viewModel = StoryViewModel()
+  @Environment(\.colorScheme) var colorScheme
 
   var body: some View {
     NavigationView {
@@ -13,8 +14,8 @@ struct ContentView: View {
             Color.azulPrimary,  // Middle (primary blue)
             Color.azulAccent, // Bottom-trailing corner (darker blue)
           ]),
-          startPoint: .topLeading,
-          endPoint: .bottomTrailing
+          startPoint: colorScheme == .dark ? .bottomTrailing : .topLeading,
+          endPoint: colorScheme == .dark ? .topLeading : .bottomTrailing
         )
         .ignoresSafeArea()
 
@@ -23,7 +24,7 @@ struct ContentView: View {
           VStack(spacing: 16) {
             ProgressView()
               .scaleEffect(1.2)
-              .tint(.azulPrimary)
+              .tint(.azulLoadingText)
 
             Text("Loading stories...")
               .font(.system(.subheadline, design: .default))
@@ -98,10 +99,10 @@ struct ContentView: View {
                 HStack {
                   ProgressView()
                     .scaleEffect(0.8)
-                    .tint(.azulPrimary)
+                    .tint(colorScheme == .dark ? .azulAccent : .azulLoadingText)
                   Text("Loading more...")
                     .font(.system(.caption, design: .default))
-                    .foregroundColor(.azulLoadingText)
+                    .foregroundColor(colorScheme == .dark ? .azulAccent : .azulLoadingText)
                     .accessibilityLabel("Loading more stories")
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 }
@@ -151,7 +152,7 @@ struct ContentView: View {
 
                   Text("You've reached the end!")
                     .font(.system(.subheadline, design: .default))
-                    .foregroundColor(.azulLoadingText)
+                    .foregroundColor(colorScheme == .dark ? .azulAccent : .azulLoadingText)
                     .accessibilityLabel("You have reached the end of the story list")
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 }
