@@ -36,7 +36,7 @@ struct Story: Codable, Identifiable {
     let timeInterval = now.timeIntervalSince(publishDate)
 
     // Convert to minutes
-    let minutes = Int(ceil(timeInterval / 60.0))
+    let minutes = Int(floor(timeInterval / 60.0))
 
     if minutes < 60 {
       // Less than 60 minutes - show in minutes
@@ -47,7 +47,7 @@ struct Story: Codable, Identifiable {
       }
     } else if minutes < 1440 {  // Less than 24 hours (24 * 60 = 1440 minutes)
       // Less than 24 hours - show in hours
-      let hours = Int(ceil(Double(minutes) / 60.0))
+      let hours = Int(floor(Double(minutes) / 60.0))
       if hours == 1 {
         return "1 hour ago"
       } else {
@@ -55,7 +55,7 @@ struct Story: Codable, Identifiable {
       }
     } else {
       // 24 hours or more - show in days
-      let days = Int(ceil(Double(minutes) / 1440.0))
+      let days = Int(floor(Double(minutes) / 1440.0))
       if days == 1 {
         return "1 day ago"
       } else {
