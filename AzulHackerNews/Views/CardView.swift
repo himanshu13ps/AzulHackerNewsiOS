@@ -43,10 +43,10 @@ struct CardView: View {
                     .foregroundColor(.azulTextSecondary)
                     .font(.caption)
                 
-                Text(story.publishDate, style: .relative)
+                Text(story.relativeTimeString)
                     .font(.system(.caption, design: .default))
                     .foregroundColor(.azulTextSecondary)
-                    .accessibilityLabel("Published \(story.publishDate, style: .relative)")
+                    .accessibilityLabel("Published \(story.relativeTimeString)")
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 
                 Spacer()
